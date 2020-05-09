@@ -1,33 +1,9 @@
-# Phaser 3 Webpack Boilerplate
+# Maze Generation
 
-Get up and running with Phaser 3 using JavaScript ES6.
+Maze generation using the Randomized Prim's algorithm.
 
-This Webpack setup takes care of your code bundling and local development server.
+![Maze Generation](https://user-images.githubusercontent.com/7384630/55728490-1205fb00-5a0c-11e9-9fca-67641df3549b.jpg)
 
-Included are some handy class files, extending Phaser 3's Scene and Sprite base classes.
+![Maze](https://user-images.githubusercontent.com/7384630/55728490-1205fb00-5a0c-11e9-9fca-67641df3549b.jpg)
 
-View the [demo](https://sebsowter.github.io/phaser-webpack/).
-
-![Mario](https://user-images.githubusercontent.com/7384630/55728490-1205fb00-5a0c-11e9-9fca-67641df3549b.jpg)
-
-## Installation
-
-Ensure you have [Node.js](https://nodejs.org) installed.
-
-Clone this repo and `cd` to project directory.
-
-```
-npm i
-```
-
-## Tasks
-
-Run the development server to preview locally.
-```
-npm start
-```
-
-Create a production build.
-```
-npm run build
-```
+[View the demo](https://sebsowter.github.io/maze-generation/).

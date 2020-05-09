@@ -1,13 +1,13 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const package = require('./package.json');
 
 module.exports = {
   entry: {
     index: './src/js/index.ts',
-    phaser: ['phaser']
+    phaser: ['phaser'],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -21,26 +21,17 @@ module.exports = {
           test: /[\\/]node_modules[\\/]/,
           name: 'phaser',
           enforce: true,
-          chunks: 'initial'
-        }
-      }
+          chunks: 'initial',
+        },
+      },
     },
-    minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          output: {
-            comments: false
-          }
-        }
-      })
-    ]
   },
   performance: {
     maxEntrypointSize: 1000000,
-    maxAssetSize: 1000000
+    maxAssetSize: 1000000,
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
   },
   module: {
     rules: [
@@ -48,41 +39,41 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
-        }
+          loader: 'babel-loader',
+        },
       },
       {
         test: /\.tsx?$/,
+        exclude: /node_modules/,
         use: 'ts-loader',
-        exclude: /node_modules/
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
         use: [
           {
-            loader: 'file-loader'
-          }
-        ]
+            loader: 'file-loader',
+          },
+        ],
       },
       {
         test: /\.json$/,
-        loader: 'json-loader'
-      }
-    ]
+        loader: 'json-loader',
+      },
+    ],
   },
   plugins: [
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
         from: 'src/assets/',
-        to: 'assets/'
-      }
+        to: 'assets/',
+      },
     ]),
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       filename: 'index.html',
-      title: '1-Bit Pinball',
+      title: package.name,
       inject: 'body',
-    })
+    }),
   ]
 };
