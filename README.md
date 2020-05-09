@@ -2,8 +2,7 @@
 
 Maze generation using the Randomized Prim's algorithm.
 
-![Maze Generation](https://user-images.githubusercontent.com/7384630/55728490-1205fb00-5a0c-11e9-9fca-67641df3549b.jpg)
+![Maze 1](https://user-images.githubusercontent.com/7384630/81481437-28424400-9228-11ea-8cf7-30d9cfcbc87d.png)
+![Maze 2](https://user-images.githubusercontent.com/7384630/81481446-36906000-9228-11ea-8b62-9fb5330ee174.png)
 
-![Maze](https://user-images.githubusercontent.com/7384630/55728490-1205fb00-5a0c-11e9-9fca-67641df3549b.jpg)
-
-[View the demo](https://sebsowter.github.io/maze-generation/).
+[View the demo](https://sebsowter.github.io/maze-generation/)
