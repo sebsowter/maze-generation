@@ -1,11 +1,11 @@
 import 'phaser';
-
-const Tiles = {
-  'wall': 0,
-  'neighbour': 1,
-  'maze': 2,
-  'passage': 3,
-};
+	
+const enum Tiles {
+  wall = 0,
+  neighbour = 1,
+  maze = 2,
+  passage = 3,
+}
 
 export default class TableScene extends Phaser.Scene {
   private layer: Phaser.Tilemaps.DynamicTilemapLayer;
