@@ -10,19 +10,25 @@ const enum Tiles {
 export default class TableScene extends Phaser.Scene {
   private layer: Phaser.Tilemaps.DynamicTilemapLayer;
   private timer: Phaser.Time.TimerEvent;
-  private tiles: integer[] = [];
+  private tiles: object[] = [];
   private walls: integer[] = [];
   private border: integer = 1;
-  private cols: integer = 496 / 16 - this.border * 2;
-  private rows: integer = 496 / 16 - this.border * 2;
+  private cols: integer = 31;
+  private rows: integer = 31;
 
   public preload() {
     this.load.image('tiles', './assets/tiles.png');
   }
   
   public init() {
-    for (let i = 0; i < this.cols * this.rows; i++) {
-      this.tiles.push(Tiles.wall);
+    this.tiles = [];
+
+    for (let y = 0; y < this.rows; y++) {
+      this.tiles[y] = [];
+
+      for (let x = 0; x < this.cols; x++) {
+        this.tiles[y][x] = Tiles.wall;
+      }
     }
   }
   
@@ -31,8 +37,8 @@ export default class TableScene extends Phaser.Scene {
       key: 'map',
       tileWidth: 16,
       tileHeight: 16,
-      width: 31,
-      height: 31,
+      width: this.cols,
+      height: this.rows,
     });
     const tileset = tilemap.addTilesetImage('tileset', 'tiles', 16, 16);
     
@@ -44,10 +50,10 @@ export default class TableScene extends Phaser.Scene {
       }
     }
 
-    const random = Math.floor(Math.random() * (this.tiles.length / 4));
-    const index = (Math.floor(random / (this.cols / 2)) * 2 * this.cols) + ((random % Math.ceil(this.cols / 2)) * 2);
+    const randomX = Math.floor(Math.random() * this.rows);
+    const randomY = Math.floor(Math.random() * this.cols);
 
-    this.addCellToMaze(index);
+    this.addCellToMaze(randomX, randomY);
 
     this.timer = this.time.addEvent({
       delay: 50,
@@ -65,7 +71,8 @@ export default class TableScene extends Phaser.Scene {
 
   private step() {
     const index = this.walls[Math.floor(Math.random() * this.walls.length)];
-    const neighbours = this.getAdjacent(index);
+    const cell = this.indexToCell(index);
+    const neighbours = this.getAdjacent(cell);
     const maze = [];
 
     neighbours.forEach((neighbour: integer, index: integer) => {
@@ -88,8 +95,8 @@ export default class TableScene extends Phaser.Scene {
     }
   }
 
-  private addCellToMaze(index: integer) {
-    this.setCell(index, Tiles.maze);
+  private addCellToMaze(x: integer, y: integer) {
+    this.setCell(x, y, Tiles.maze);
     this.getAdjacent(index).forEach(cell => {
       if (cell !== null && this.tiles[cell] !== Tiles.passage) {
         this.setCell(cell, Tiles.neighbour);
@@ -97,11 +104,11 @@ export default class TableScene extends Phaser.Scene {
     });
   }
 
-  private setCell(index: integer, type: integer) {
-    const position = this.getLayerPosition(index);
+  private setCell(x: integer, y: integer, type: integer) {
+    const index = this.cellToIndex(x, y);
 
-    this.tiles[index] = type;
-    this.layer.putTileAt(type, position.x, position.y);
+    this.tiles[x][y] = type;
+    this.layer.putTileAt(type, x + 1, y + 1);
 
     switch (type) {
       case Tiles.wall:
@@ -114,20 +121,30 @@ export default class TableScene extends Phaser.Scene {
     }
   }
 
-  private getAdjacent(index: integer): integer[] {
+  private getAdjacent(x: integer, y: integer): integer[] {
     return [
-      this.getAdjacentY(index, -1),
-      this.getAdjacentX(index, 1),
-      this.getAdjacentY(index, 1),
-      this.getAdjacentX(index, -1),
+      this.getAdjacentY(x, y, -1),
+      this.getAdjacentX(x, this.cols, 1),
+      this.getAdjacentY(x, y, 1),
+      this.getAdjacentX(x, this.cols, -1),
     ];
   }
 
-  private getAdjacentX(index: integer, direction: integer): integer {
-    const neighbour = index % this.cols;
+  private getAdjacentX(x: integer, max: integer, direction: integer): integer {
+    const neighbour = x + direction;
 
-    if ((neighbour > 0 && direction < 0) || (neighbour < this.cols - 1 && direction > 0)) {    
-      return index + direction;
+    if (neighbour > 0 && neighbour < max) {    
+      return neighbour;
+    }
+    
+    return null;
+  }
+
+  private getAdjacentY(x: integer, y: integer, max: integer, direction: integer): integer {
+    const neighbour = index + direction * this.cols;
+    
+    if (neighbour >= 0 && neighbour < this.tiles.length) {
+      return neighbour;
     }
     
     return null;
@@ -143,10 +160,14 @@ export default class TableScene extends Phaser.Scene {
     return null;
   }
 
-  private getLayerPosition(index: integer): Phaser.Math.Vector2 {
+  private cellToIndex(x: integer, y: integer): integer {
+    return y * this.cols + x;
+  }
+
+  private indexToCell(index: integer): Phaser.Math.Vector2 {
     return new Phaser.Math.Vector2(
-      index % this.cols + this.border,
-      Math.floor(index / this.cols) + this.border,
+      index % this.cols,
+      Math.floor(index / this.cols),
     );
   }
 }
